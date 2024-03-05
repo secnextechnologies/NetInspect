@@ -26,7 +26,7 @@ This script is designed to scan IPs or domains, providing detailed service infor
 ## Requirements
 
 - Python 3.x
-- Required Python packages: `requests`, `socket`, `urllib3`, `colorama`
+- Required Python packages: `requests`, `socket`, `urllib3`, `colorama`, `beautifulsoup4`
 
 ```bash
   pip install -r requirements.txt
