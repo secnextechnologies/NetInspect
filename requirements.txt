@@ -1,3 +1,9 @@
 requests==2.26.0
 urllib3==1.26.7
 colorama==0.4.4
+socket
+signal
+argparse
+ipaddress
+threading
+sys
