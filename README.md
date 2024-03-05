@@ -37,7 +37,7 @@ This script is designed to scan IPs or domains, providing detailed service infor
 1. Clone the repository:
 
     ```bash
-    git clone https://github.com/your-username/network-service-scanner.git
+    git clone https://github.com/secnextechnologies/NetInspact.git
     ```
 
 2. Navigate to the project directory:
