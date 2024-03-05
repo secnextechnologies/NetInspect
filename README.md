@@ -1,4 +1,4 @@
-# NetInspact
+# NetInspect
 
 A Python script for scanning IPs or domains to gather service information. This script can identify HTTP and HTTPS services, retrieve server information, status codes, content length, and perform CMS fingerprinting.
 
@@ -37,13 +37,13 @@ This script is designed to scan IPs or domains, providing detailed service infor
 1. Clone the repository:
 
     ```bash
-    git clone https://github.com/secnextechnologies/NetInspact.git
+    git clone https://github.com/secnextechnologies/NetInspect.git
     ```
 
 2. Navigate to the project directory:
 
     ```bash
-    cd NetInspact
+    cd NetInspect
     ```
 
 3. Install the required packages:
@@ -55,7 +55,7 @@ This script is designed to scan IPs or domains, providing detailed service infor
 4. Run the script with your desired options:
 
     ```bash
-    python netinspact.py [options]
+    python netinspect.py [options]
     ```
 
 ## Options
@@ -70,24 +70,24 @@ This script is designed to scan IPs or domains, providing detailed service infor
 For more options, use:
 
 ```bash
-python netinspact.py -h
+python netinspect.py -h
 ```
 
 ## Examples
 
 Scan a single IP:
 ```bash
-python netinspact.py -i 192.168.1.1
+python netinspect.py -i 192.168.1.1
 ```
 
 Scan a list of domains:
 ```bash
-python netinspact.py -dl domain_list.txt
+python netinspect.py -dl domain_list.txt
 ```
 
 Scan an IP subnet:
 ```bash
-python netinspact.py -is 192.168.1.0/24
+python netinspect.py -is 192.168.1.0/24
 ```
 
 ## License
