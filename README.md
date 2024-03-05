@@ -43,7 +43,7 @@ This script is designed to scan IPs or domains, providing detailed service infor
 2. Navigate to the project directory:
 
     ```bash
-    cd network-service-scanner
+    cd NetInspact
     ```
 
 3. Install the required packages:
@@ -55,7 +55,7 @@ This script is designed to scan IPs or domains, providing detailed service infor
 4. Run the script with your desired options:
 
     ```bash
-    python scanner.py [options]
+    python netinspact.py [options]
     ```
 
 ## Options
@@ -70,24 +70,24 @@ This script is designed to scan IPs or domains, providing detailed service infor
 For more options, use:
 
 ```bash
-python scanner.py -h
+python netinspact.py -h
 ```
 
 ## Examples
 
 Scan a single IP:
 ```bash
-python scanner.py -i 192.168.1.1
+python netinspact.py -i 192.168.1.1
 ```
 
 Scan a list of domains:
 ```bash
-python scanner.py -dl domain_list.txt
+python netinspact.py -dl domain_list.txt
 ```
 
 Scan an IP subnet:
 ```bash
-python scanner.py -is 192.168.1.0/24
+python netinspact.py -is 192.168.1.0/24
 ```
 
 ## License
