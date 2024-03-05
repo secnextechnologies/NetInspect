@@ -28,6 +28,10 @@ This script is designed to scan IPs or domains, providing detailed service infor
 - Python 3.x
 - Required Python packages: `requests`, `socket`, `urllib3`, `colorama`
 
+```bash
+  pip install -r requirements.txt
+```
+
 ## Usage
 
 1. Clone the repository:
