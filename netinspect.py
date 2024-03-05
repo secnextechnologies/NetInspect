@@ -8,6 +8,7 @@ import signal
 import ipaddress
 import threading
 import sys
+from bs4 import BeautifulSoup
 
 # ASCII banner
 ascii_banner = """
@@ -30,22 +31,27 @@ urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 # Global flag to signal threads to exit
 exit_flag = threading.Event()
 
-def get_service_info(ip, output=None):
+def get_service_info(target, output=None):
     if exit_flag.is_set():
         return
 
+    is_ip = False
     try:
-        target = socket.gethostbyaddr(ip)[0]
-    except socket.herror:
-        target = ip
+        ip = ipaddress.ip_address(target)
+        is_ip = True
+    except ValueError:
+        pass
 
     result = ""
 
     # Check for HTTP service
     try:
-        url = f"http://{target}"
+        if is_ip:
+            url = f"http://{target}"
+        else:
+            url = f"http://{target}"
         response = requests.get(url, timeout=5, verify=False)
-        result += f"[ {Fore.GREEN}{url}{Style.RESET_ALL} | {Fore.CYAN}{response.headers.get('Server', 'None')}{Style.RESET_ALL} | {Fore.YELLOW}{response.status_code}{Style.RESET_ALL} | {Fore.MAGENTA}{len(response.content)}{Style.RESET_ALL} | {Fore.WHITE}{response.reason}{Style.RESET_ALL} ]"
+        result += f"[ {Fore.GREEN}{url}{Style.RESET_ALL} | {Fore.CYAN}{response.headers.get('Server', 'None')}{Style.RESET_ALL} | {Fore.YELLOW}{response.status_code}{Style.RESET_ALL} | {Fore.MAGENTA}{len(response.content)}{Style.RESET_ALL} | {Fore.WHITE}{response.reason}{Style.RESET_ALL} | {get_site_title(response.text)} ]"
 
         # CMS Fingerprinting
         cms = identify_cms(response.text)
@@ -56,11 +62,21 @@ def get_service_info(ip, output=None):
 
     # Check for HTTPS service
     try:
-        url = f"https://{target}"
+        if is_ip:
+            url = f"https://{target}"
+        else:
+            url = f"https://{target}"
         response = requests.get(url, timeout=5, verify=False)
         if result:  # Add a newline only if the HTTP result is not empty
             result += "\n"
-        result += f"[ {Fore.GREEN}{url}{Style.RESET_ALL} | {Fore.CYAN}{response.headers.get('Server', 'None')}{Style.RESET_ALL} | {Fore.YELLOW}{response.status_code}{Style.RESET_ALL} | {Fore.MAGENTA}{len(response.content)}{Style.RESET_ALL} | {Fore.WHITE}{response.reason}{Style.RESET_ALL} ]"
+        result += f"[ {Fore.GREEN}{url}{Style.RESET_ALL} | {Fore.CYAN}{response.headers.get('Server', 'None')}{Style.RESET_ALL} | {Fore.YELLOW}{response.status_code}{Style.RESET_ALL} | {Fore.MAGENTA}{len(response.content)}{Style.RESET_ALL} | {Fore.WHITE}{response.reason}{Style.RESET_ALL} | {get_site_title(response.text)} ]"
+
+        # SSL Certificate details
+        try:
+            cert_details = response.connection.sock.getpeercert()
+            result += f"\n  {Fore.BLUE}SSL Certificate: {cert_details}{Style.RESET_ALL}"
+        except AttributeError:
+            pass
 
         # CMS Fingerprinting
         cms = identify_cms(response.text)
@@ -74,6 +90,11 @@ def get_service_info(ip, output=None):
             file.write(result)
     elif result.strip():  # Check if result is not empty after stripping spaces
         print(result)
+
+def get_site_title(html_content):
+    soup = BeautifulSoup(html_content, 'html.parser')
+    title_tag = soup.find('title')
+    return f"{title_tag.text.strip()}" if title_tag else ""
 
 def identify_cms(content):
     cms_list = {
@@ -89,7 +110,8 @@ def identify_cms(content):
     return None
 
 def handle_exception(worker):
-    exception_type, exception, traceback = worker.exc_info()
+    exc_info = sys.exc_info()
+    exception_type, exception, traceback = exc_info
     print(f"Exception in worker: {exception_type.__name__}: {exception}")
 
 def interrupt_handler(signal, frame):
@@ -136,12 +158,12 @@ if __name__ == "__main__":
 
     try:
         with ThreadPoolExecutor(max_workers=10) as executor:
-            futures = {executor.submit(get_service_info, target, args.output): target for target in targets}
+            futures = [executor.submit(get_service_info, target, args.output) for target in targets]
             for future in futures:
                 try:
                     future.result()
                 except Exception as e:
-                    handle_exception(future)
+                    handle_exception(e)
     except KeyboardInterrupt:
         print("\nScript interrupted. Exiting gracefully.")
 
